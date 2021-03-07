@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 #[derive(Debug, Copy, Clone)]
-pub struct Vec3(f64, f64, f64);
+pub struct Vec3(pub f64, pub f64, pub f64);
 
 impl Vec3 {
 	pub fn empty() -> Vec3 {
@@ -136,7 +136,7 @@ impl Div<f64> for Vec3 {
 *** Vec3 Aliases ***
 *******************/
 
-type Point3 = Vec3;
+pub type Point3 = Vec3;
 
 
 

@@ -1,6 +1,12 @@
 mod vec3;
+
+mod ray;
+
 mod color;
 use color::*;
+
+
+// Render
 
 pub fn printimage(imagewidth: usize, imageheight: usize) {
 

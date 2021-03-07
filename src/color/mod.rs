@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 
+#[derive(Debug, Copy, Clone)]
 pub struct Color(pub f64, pub f64, pub f64, pub f64);
 
 impl Color {
