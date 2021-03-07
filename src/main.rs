@@ -1,8 +1,11 @@
 use ray_tracer::printimage;
 
-const IMAGE_WIDTH: usize = 256;
-const IMAGE_HEIGHT: usize = 256;
+// Image
+
+const ASPECT_RATIO: f64 = 4.0 / 3.0;
+const IMAGE_WIDTH: i32 = 900;
+
 
 fn main() {
-	printimage(IMAGE_WIDTH, IMAGE_HEIGHT)
+	printimage(ASPECT_RATIO, IMAGE_WIDTH)
 }
