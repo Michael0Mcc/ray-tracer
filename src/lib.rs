@@ -1,5 +1,7 @@
 //Imports
 
+mod utility;
+
 pub mod vec3;
 use vec3::*;
 
