@@ -1,6 +1,6 @@
 //Imports
 
-mod vec3;
+pub mod vec3;
 use vec3::*;
 
 mod ray;
@@ -9,9 +9,9 @@ use ray::*;
 mod color;
 use color::*;
 
-mod hittable;
+pub mod hittable;
 use hittable::*;
-use hittable::{sphere::*, hittable_list::* };
+use hittable::hittable_list::*;
 
 fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
 	let mut rec = HitRecord {
@@ -33,20 +33,13 @@ fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
 
 // Render
 
-pub fn printimage(aspect_ratio: f64, image_width: i32) {
+pub fn printimage(aspect_ratio: f64, image_width: i32, world: &HittableList) {
 
 	// Image
 
 	// let aspect_ratio: f64 = 4.0 / 3.0;
 	// let image_width: i32 = 900;
 	let image_height: i32 = ((image_width as f64) / aspect_ratio) as i32;
-
-
-	// World
-	let mut world = HittableList{ objects: vec![] };
-	world.add(sphere(Vec3(0.0, 0.0, -1.0), 0.5));
-	world.add(sphere(Vec3(0.0, -100.5, -1.0), 100.0));
-
 
 
 	// Camera
@@ -72,7 +65,7 @@ pub fn printimage(aspect_ratio: f64, image_width: i32) {
 
 			let r: Ray = ray(origin, lower_left_corner + u*horizontal + v*verticle - origin);
 
-			let pixel_color: Color = ray_color(&r, &world);
+			let pixel_color: Color = ray_color(&r, world);
 			write_color(pixel_color);
 		}
 	}
