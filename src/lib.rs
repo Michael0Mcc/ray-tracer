@@ -10,12 +10,29 @@ mod color;
 use color::*;
 
 
-// Sets Background Gradient
+// P(t) = A+tb
+// t^(2)b•b + 2tb•(A−C) + (A−C)•(A−C) − r^(2) = 0
+pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
+	let oc = r.origin() - center;
 
-fn ray_color(ray: Ray) -> Color {
+	let a = r.direction().dot(&r.direction());
+	let b = 2.0 * oc.dot(&r.direction());
+	let c = oc.dot(&oc) - radius*radius;
+
+	let discriminant = b*b - 4.0*a*c;
+
+	discriminant > 0.0
+}
+
+fn ray_color(ray: &Ray) -> Color {
+	// Sphere Hit
+	if hit_sphere(Vec3(0.0, 0.0, -1.0), 0.5, &ray) {
+		return Color(1.0, 0.0, 0.0);
+	}
+
 	let unit_direction: Vec3 = ray.direction().normal();
 	let gradient = 0.5*(unit_direction.y() + 1.0);
-	(1.0-gradient)*Color(1.0, 1.0, 1.0) + gradient*Color(0.5, 0.7, 1.0)
+	(1.0-gradient)*Color(0.1, 0.1, 0.4) + gradient*Color(0.0, 0.0, 0.0)
 }
 
 
@@ -53,7 +70,7 @@ pub fn printimage(aspect_ratio: f64, image_width: i32) {
 
 			let r: Ray = ray(origin, lower_left_corner + u*horizontal + v*verticle - origin);
 
-			let pixel_color: Color = ray_color(r);
+			let pixel_color: Color = ray_color(&r);
 			write_color(pixel_color);
 		}
 	}
