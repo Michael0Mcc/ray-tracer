@@ -1,6 +1,7 @@
 //Imports
 
 mod utility;
+use utility::*;
 
 pub mod vec3;
 use vec3::*;
@@ -15,6 +16,9 @@ pub mod hittable;
 use hittable::*;
 use hittable::hittable_list::*;
 
+pub mod camera;
+use camera::*;
+
 fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
 	let mut rec = HitRecord {
 		p: Vec3(0.0, 0.0, 0.0),
@@ -23,7 +27,7 @@ fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
 		front_face: false,
 	};
 
-	if world.hit(ray, 0.0, f64::INFINITY, &mut rec) {
+	if world.hit(ray, 0.0, INFINITY, &mut rec) {
 		return 0.5 * (Color(1.0, 1.0, 1.0) + rec.normal);
 	}
 
@@ -35,7 +39,7 @@ fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
 
 // Render
 
-pub fn printimage(aspect_ratio: f64, image_width: i32, world: &HittableList) {
+pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, world: &HittableList) {
 
 	// Image
 
@@ -46,15 +50,7 @@ pub fn printimage(aspect_ratio: f64, image_width: i32, world: &HittableList) {
 
 	// Camera
 
-	let viewport_height: f64 = 2.0;
-	let	viewport_width: f64 = aspect_ratio * viewport_height;
-	let focal_length: f64 = 1.0;
-
-
-	let origin: Point3 = Vec3(0.0, 0.0, 0.0);
-	let horizontal: Vec3 = Vec3(viewport_width, 0.0, 0.0);
-	let verticle: Vec3 = Vec3(0.0, viewport_height, 0.0);
-	let lower_left_corner = origin - horizontal/2.0 - verticle/2.0 - Vec3(0.0, 0.0, focal_length);
+	let cam = camera(aspect_ratio);
 
 
 	print!("P3\n{} {}\n255\n", image_width, image_height);
@@ -62,13 +58,15 @@ pub fn printimage(aspect_ratio: f64, image_width: i32, world: &HittableList) {
 	for j in (0..image_height).rev() {
 		eprint!("\rScanlines remaining: {}", j);
 		for i in 0..image_width {
-			let u: f64 = (i as f64) / ((image_width-1) as f64);
-			let v = (j as f64) / ((image_height-1) as f64);
+			let mut pixel_color = Color(0.0, 0.0, 0.0);
+			for _s in 0..samples_per_pixel {
+				let u = ((i as f64) + random_f64()) / ((image_width - 1) as f64);
+				let v = ((j as f64) + random_f64()) / ((image_height - 1) as f64);
 
-			let r: Ray = ray(origin, lower_left_corner + u*horizontal + v*verticle - origin);
-
-			let pixel_color: Color = ray_color(&r, world);
-			write_color(pixel_color);
+				let ray = cam.get_ray(u, v);
+				pixel_color += ray_color(&ray, world);
+			}
+			write_color(pixel_color, samples_per_pixel);
 		}
 	}
 

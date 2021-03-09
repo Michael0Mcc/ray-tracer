@@ -1,7 +1,8 @@
 #![allow(dead_code)]
 
-use std::ops::{ Mul, Add };
+use std::ops::{ Mul, Add, AddAssign };
 use super::vec3::Vec3;
+use super::utility::clamp;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Color(pub f64, pub f64, pub f64);
@@ -58,6 +59,12 @@ impl Mul<Color> for f64 {
 	}
 }
 
+impl AddAssign for Color {
+	fn add_assign(&mut self, other: Self) {
+		*self= Color(self.0+other.0, self.1+other.1, self.2+other.2);
+	}
+}
+
 impl Add<Color> for Color {
 	type Output = Self;
 
@@ -74,8 +81,21 @@ impl Add<Vec3> for Color {
 	}
 }
 
-pub fn write_color(pixel_color: Color) {
-	print!("{} {} {} \n", pixel_color.r(), pixel_color.g(), pixel_color.b());
+pub fn write_color(pixel_color: Color, samples_per_pixel: i32) {
+	let mut r = pixel_color.0;
+	let mut g = pixel_color.1;
+	let mut b = pixel_color.2;
+
+	let scale = 1.0 / (samples_per_pixel as f64);
+	r *= scale;
+	g *= scale;
+	b *= scale;
+
+	print!("{} {} {} \n",
+		(256.0*clamp(r, 0.0, 0.999)) as i32,
+		(256.0*clamp(g, 0.0, 0.999)) as i32,
+		(256.0*clamp(b, 0.0, 0.999)) as i32
+	);
 }
 
 

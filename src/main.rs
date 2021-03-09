@@ -8,6 +8,7 @@ use ray_tracer::vec3::*;
 
 const ASPECT_RATIO: f64 = 4.0 / 3.0;
 const IMAGE_WIDTH: i32 = 900;
+const SAMPLES_PER_PIXEL: i32 = 100;
 
 
 fn main() {
@@ -18,5 +19,5 @@ fn main() {
 	world.add(sphere(Vec3(0.0, -100.5, -1.0), 100.0));
 
 	
-	printimage(ASPECT_RATIO, IMAGE_WIDTH, &world);
+	printimage(ASPECT_RATIO, IMAGE_WIDTH, SAMPLES_PER_PIXEL, &world);
 }
