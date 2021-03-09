@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use std::ops::{ Mul, Add };
+use super::vec3::Vec3;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Color(pub f64, pub f64, pub f64);
@@ -57,10 +58,18 @@ impl Mul<Color> for f64 {
 	}
 }
 
-impl Add for Color {
+impl Add<Color> for Color {
 	type Output = Self;
 
 	fn add(self, other: Self) -> Self {
+		Color(self.0+other.0, self.1+other.1, self.2+other.2)
+	}
+}
+
+impl Add<Vec3> for Color {
+	type Output = Self;
+
+	fn add(self, other: Vec3) -> Self {
 		Color(self.0+other.0, self.1+other.1, self.2+other.2)
 	}
 }

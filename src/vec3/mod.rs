@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use super::color::Color;
+
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3(pub f64, pub f64, pub f64);
 
@@ -66,10 +68,18 @@ impl AddAssign for Vec3 {
 	}
 }
 
-impl Add for Vec3 {
+impl Add<Vec3> for Vec3 {
 	type Output = Self;
 
 	fn add(self, other: Self) -> Self {
+		Vec3(self.0+other.0, self.1+other.1, self.2+other.2)
+	}
+}
+
+impl Add<Color> for Vec3 {
+	type Output = Self;
+
+	fn add(self, other: Color) -> Self {
 		Vec3(self.0+other.0, self.1+other.1, self.2+other.2)
 	}
 }

@@ -9,35 +9,25 @@ use ray::*;
 mod color;
 use color::*;
 
+mod hittable;
+use hittable::*;
+use hittable::{sphere::*, hittable_list::* };
 
-// P(t) = A+tb
-// t^(2)b•b + 2tb•(A−C) + (A−C)•(A−C) − r^(2) = 0
-pub fn hit_sphere(center: Point3, radius: f64, ray: &Ray) -> f64 {
-	let oc = ray.origin() - center;
+fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
+	let mut rec = HitRecord {
+		p: Vec3(0.0, 0.0, 0.0),
+		normal: Vec3(0.0, 0.0, 0.0),
+		t: 0.0,
+		front_face: false,
+	};
 
-	let a = ray.direction().len_squared(); 
-	let half_b = oc.dot(&ray.direction());
-	let c = oc.dot(&oc) - radius*radius;
-
-	let discriminant = half_b*half_b - a*c;
-
-	if discriminant < 0.0 {
-		return -1.0;
-	}
-	(-half_b - discriminant.sqrt()) / a
-}
-
-fn ray_color(ray: &Ray) -> Color {
-	// Sphere Hit
-	let t = hit_sphere(Vec3(0.0, 0.0, -1.0), 0.5, ray);
-	if t > 0.0 {
-		let normal: Vec3 = (ray.at(t) - Vec3(0.0, 0.0, -1.0)).normal();
-		return 0.5*Color(normal.x()+1.0, normal.y()+1.0, normal.z()+1.0);
+	if world.hit(ray, 0.0, f64::INFINITY, &mut rec) {
+		return 0.5 * (Color(1.0, 1.0, 1.0) + rec.normal);
 	}
 
 	let unit_direction: Vec3 = ray.direction().normal();
-	let gradient = 0.5*(unit_direction.y() + 1.0);
-	(1.0-gradient)*Color(0.1, 0.1, 0.4) + gradient*Color(0.0, 0.0, 0.0)
+	let t = 0.5*(unit_direction.y() + 1.0);
+	(1.0-t)*Color(0.1, 0.1, 0.4) + t*Color(0.0, 0.0, 0.0)
 }
 
 
@@ -50,6 +40,13 @@ pub fn printimage(aspect_ratio: f64, image_width: i32) {
 	// let aspect_ratio: f64 = 4.0 / 3.0;
 	// let image_width: i32 = 900;
 	let image_height: i32 = ((image_width as f64) / aspect_ratio) as i32;
+
+
+	// World
+	let mut world = HittableList{ objects: vec![] };
+	world.add(sphere(Vec3(0.0, 0.0, -1.0), 0.5));
+	world.add(sphere(Vec3(0.0, -100.5, -1.0), 100.0));
+
 
 
 	// Camera
@@ -75,7 +72,7 @@ pub fn printimage(aspect_ratio: f64, image_width: i32) {
 
 			let r: Ray = ray(origin, lower_left_corner + u*horizontal + v*verticle - origin);
 
-			let pixel_color: Color = ray_color(&r);
+			let pixel_color: Color = ray_color(&r, &world);
 			write_color(pixel_color);
 		}
 	}
