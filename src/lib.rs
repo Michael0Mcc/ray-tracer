@@ -12,22 +12,27 @@ use color::*;
 
 // P(t) = A+tb
 // t^(2)b•b + 2tb•(A−C) + (A−C)•(A−C) − r^(2) = 0
-pub fn hit_sphere(center: Point3, radius: f64, r: &Ray) -> bool {
-	let oc = r.origin() - center;
+pub fn hit_sphere(center: Point3, radius: f64, ray: &Ray) -> f64 {
+	let oc = ray.origin() - center;
 
-	let a = r.direction().dot(&r.direction());
-	let b = 2.0 * oc.dot(&r.direction());
+	let a = ray.direction().len_squared(); 
+	let half_b = oc.dot(&ray.direction());
 	let c = oc.dot(&oc) - radius*radius;
 
-	let discriminant = b*b - 4.0*a*c;
+	let discriminant = half_b*half_b - a*c;
 
-	discriminant > 0.0
+	if discriminant < 0.0 {
+		return -1.0;
+	}
+	(-half_b - discriminant.sqrt()) / a
 }
 
 fn ray_color(ray: &Ray) -> Color {
 	// Sphere Hit
-	if hit_sphere(Vec3(0.0, 0.0, -1.0), 0.5, &ray) {
-		return Color(1.0, 0.0, 0.0);
+	let t = hit_sphere(Vec3(0.0, 0.0, -1.0), 0.5, ray);
+	if t > 0.0 {
+		let normal: Vec3 = (ray.at(t) - Vec3(0.0, 0.0, -1.0)).normal();
+		return 0.5*Color(normal.x()+1.0, normal.y()+1.0, normal.z()+1.0);
 	}
 
 	let unit_direction: Vec3 = ray.direction().normal();
