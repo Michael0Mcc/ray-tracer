@@ -60,8 +60,8 @@ pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, w
 	for j in (0..image_height).rev() {
 
 		// Progress Bar
-		let percent = 100-((j*100)/image_height);
-		eprint!("\r{} - {}%; Scanlines remaining: {}; ", format!("{:*<20}", "█".repeat((percent/5) as usize)), percent, j);
+		let percent = 100.0 - ((j*100) as f64 /image_height as f64);
+		eprint!("\r{} - {}%; Scanlines remaining: {}; ", format!("{:*<20}", "█".repeat((percent/5.0) as usize)), percent as i32, j);
 		
 		for i in 0..image_width {
 			let mut pixel_color = Color(0.0, 0.0, 0.0);
