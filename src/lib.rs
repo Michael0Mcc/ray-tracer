@@ -1,6 +1,8 @@
 //Imports
 
 mod utility;
+use std::usize;
+
 use utility::*;
 
 pub mod vec3;
@@ -44,7 +46,7 @@ pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, w
 	// Image
 
 	// let aspect_ratio: f64 = 4.0 / 3.0;
-	// let image_width: i32 = 900;
+	// let image_width: i32 = 1200;
 	let image_height: i32 = ((image_width as f64) / aspect_ratio) as i32;
 
 
@@ -56,7 +58,11 @@ pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, w
 	print!("P3\n{} {}\n255\n", image_width, image_height);
 
 	for j in (0..image_height).rev() {
-		eprint!("\rScanlines remaining: {}", j);
+
+		// Progress Bar
+		let percent = 100-((j*100)/image_height);
+		eprint!("\r{} - {}%; Scanlines remaining: {}; ", format!("{:*<20}", "█".repeat((percent/5) as usize)), percent, j);
+		
 		for i in 0..image_width {
 			let mut pixel_color = Color(0.0, 0.0, 0.0);
 			for _s in 0..samples_per_pixel {

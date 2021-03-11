@@ -7,7 +7,7 @@ use ray_tracer::vec3::*;
 // Image
 
 const ASPECT_RATIO: f64 = 4.0 / 3.0;
-const IMAGE_WIDTH: i32 = 900;
+const IMAGE_WIDTH: i32 = 1200;
 const SAMPLES_PER_PIXEL: i32 = 100;
 
 
