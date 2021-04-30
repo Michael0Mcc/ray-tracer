@@ -21,7 +21,12 @@ use hittable::hittable_list::*;
 pub mod camera;
 use camera::*;
 
-fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
+fn ray_color(ray: &Ray, world: &dyn Hittable, depth: i32) -> Color {
+
+	if depth <= 0 {
+		return Color(0.0, 0.0, 0.0);
+	}
+
 	let mut rec = HitRecord {
 		p: Vec3(0.0, 0.0, 0.0),
 		normal: Vec3(0.0, 0.0, 0.0),
@@ -30,18 +35,19 @@ fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
 	};
 
 	if world.hit(ray, 0.0, INFINITY, &mut rec) {
-		return 0.5 * (Color(1.0, 1.0, 1.0) + rec.normal);
+		let target: Point3 = rec.p + rec.normal + rand_in_unit_sphere();
+		return 0.5 * ray_color(&Ray{ origin: rec.p, direction: target - rec.p}, world, depth-1);
 	}
 
 	let unit_direction: Vec3 = ray.direction().normal();
 	let t = 0.5*(unit_direction.y() + 1.0);
-	(1.0-t)*Color(0.1, 0.1, 0.4) + t*Color(0.0, 0.0, 0.0)
+	(1.0-t)*Color(1.0, 1.0, 1.0) + t*Color(0.5, 0.7, 1.0)
 }
 
 
 // Render
 
-pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, world: &HittableList) {
+pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, world: &HittableList, max_depth: i32) {
 
 	// Image
 
@@ -70,7 +76,7 @@ pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, w
 				let v = ((j as f64) + random_f64()) / ((image_height - 1) as f64);
 
 				let ray = cam.get_ray(u, v);
-				pixel_color += ray_color(&ray, world);
+				pixel_color += ray_color(&ray, world, max_depth);
 			}
 			write_color(pixel_color, samples_per_pixel);
 		}

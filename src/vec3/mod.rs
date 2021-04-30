@@ -1,9 +1,20 @@
 #![allow(dead_code)]
 
 use super::color::Color;
+use super::utility::{ random_f64, random_range_f64 };
 
 #[derive(Debug, Copy, Clone)]
 pub struct Vec3(pub f64, pub f64, pub f64);
+
+
+pub fn rand_in_unit_sphere() -> Vec3 {
+	loop {
+		let p: Vec3 = Vec3::vec3_rand_range(-1.0, 1.0);
+		if p.len_squared() >= 1.0 { continue; }
+		return p;
+	}
+}
+
 
 impl Vec3 {
 	pub fn empty() -> Vec3 {
@@ -16,6 +27,14 @@ impl Vec3 {
 
 	pub fn clone(&self) -> Vec3 {
 		Vec3(self.0, self.1, self.2)
+	}
+
+	pub fn vec3_rand() -> Vec3 {
+		Vec3(random_f64(), random_f64(), random_f64())
+	}
+
+	pub fn vec3_rand_range(min: f64, max: f64) -> Vec3 {
+		Vec3(random_range_f64(min, max), random_range_f64(min, max), random_range_f64(min, max))
 	}
 
 	pub fn x(&self) -> f64 { self.0 }
