@@ -3,7 +3,6 @@ use ray_tracer::printimage;
 use ray_tracer::hittable::{ hittable_list::*, sphere::* };
 use ray_tracer::vec3::*;
 
-
 // Image
 
 const ASPECT_RATIO: f64 = 4.0 / 3.0;

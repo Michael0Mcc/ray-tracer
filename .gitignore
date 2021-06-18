@@ -1,2 +1,14 @@
+# Ignore build directory and files
 /target
+/target/**
+
+# Ignore Image Output
 *.ppm
+
+# Ignore Logs
+/logs
+*.log
+*.logs
+
+# Ignore Vim Files
+# *.swp

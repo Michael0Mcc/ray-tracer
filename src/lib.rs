@@ -60,7 +60,6 @@ pub fn printimage(aspect_ratio: f64, image_width: i32, samples_per_pixel: i32, w
 
 	let cam = camera(aspect_ratio);
 
-
 	print!("P3\n{} {}\n255\n", image_width, image_height);
 
 	for j in (0..image_height).rev() {
