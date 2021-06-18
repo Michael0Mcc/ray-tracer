@@ -1,6 +1,6 @@
 # Ignore build directory and files
 /target
-/target/**
+target/**
 
 # Ignore Image Output
 *.ppm
